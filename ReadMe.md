@@ -16,3 +16,8 @@ Run latest connector in Data Studio to test:
 ```
 npm run try_latest
 ```
+
+Format code to community standards:
+```bash
+npm run prettier
+```
