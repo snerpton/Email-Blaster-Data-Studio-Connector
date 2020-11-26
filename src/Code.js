@@ -1,11 +1,3 @@
-/*
- * Connector reference:
- *     https://developers.google.com/datastudio/connector/reference
- * 
- * Docs to run locally:
- *     https://developers.google.com/datastudio/connector/local-development#existing_connectors
- */
-
 var cc = DataStudioApp.createCommunityConnector();
 
 /*
