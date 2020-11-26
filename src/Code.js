@@ -173,9 +173,11 @@ function getData(request) {
     // request.configParams.package
     "https://api.emailblaster.cloud/2.0/campaign/view/sent/1"
   ];
-  //var response = UrlFetchApp.fetch(url.join(''), { headers : {"Content-type":"application/json", "api_key": request.configParams.package} });
-  var response =
-    '{"status":"ok","campaigns":[{"id":168,"name":"Pension webinars - reminder","subject":"Pension webinars - reminder","date":"20/11/2020","send_volume":"2115","sent_to":"Pensions E-mail -- 20.11.20","preview":"https://campaign.emailblaster.cloud/MTQ0MTU/168.html"},{"id":167,"name":"ACTION- Graduate Development Programme- PRP Process- Graduates","subject":"ACTION- Graduate Development Programme- PRP Process","date":"19/11/2020","send_volume":"21","sent_to":"Graduates -- 19.11.20","preview":"https://campaign.emailblaster.cloud/MTQ0MTU/167.html"},{"id":166,"name":"ACTION- Graduate Development Programme - PRP Process - Consulting Graduates","subject":"ACTION- Graduate Development Programme - PRP Process","date":"19/11/2020","send_volume":"53","sent_to":"Consulting Graduates -- 19.11.20\u00a0","preview":"https://campaign.emailblaster.cloud/MTQ0MTU/166.html"}]}';
+
+  var response = UrlFetchApp.fetch(url.join(''), { headers : {"content-type":"application/json", "api_key": request.configParams.package} });
+
+  // var response =
+  //   '{"status":"ok","campaigns":[{"id":168,"name":"Pension webinars - reminder","subject":"Pension webinars - reminder","date":"20/11/2020","send_volume":"2115","sent_to":"Pensions E-mail -- 20.11.20","preview":"https://campaign.emailblaster.cloud/MTQ0MTU/168.html"},{"id":167,"name":"ACTION- Graduate Development Programme- PRP Process- Graduates","subject":"ACTION- Graduate Development Programme- PRP Process","date":"19/11/2020","send_volume":"21","sent_to":"Graduates -- 19.11.20","preview":"https://campaign.emailblaster.cloud/MTQ0MTU/167.html"},{"id":166,"name":"ACTION- Graduate Development Programme - PRP Process - Consulting Graduates","subject":"ACTION- Graduate Development Programme - PRP Process","date":"19/11/2020","send_volume":"53","sent_to":"Consulting Graduates -- 19.11.20\u00a0","preview":"https://campaign.emailblaster.cloud/MTQ0MTU/166.html"}]}';
 
   var parsedResponse = JSON.parse(response).campaigns;
   var rows = responseToRows(
