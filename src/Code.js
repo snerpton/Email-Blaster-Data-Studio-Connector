@@ -1,5 +1,7 @@
 var cc = DataStudioApp.createCommunityConnector();
 
+
+
 /*
  * Authorisation type for connector
  */
@@ -11,6 +13,8 @@ function getAuthType() {
     .setAuthType(AuthTypes.NONE)
     .build();
 }
+
+
 
 /*
  * User configuration screen rendered in DataStudio
@@ -41,62 +45,17 @@ function getConfig(request) {
   return config.build();
 }
 
+
+
 /*
  * Schema for data returned to DataStudio
  */
-/*
-Returned from Email Blaster
-[
-    {
-      "id": 37,
-      "name": "Staying up to date with Windows 10",
-      "subject": "Staying up to date with Windows 10",
-      "date": "30\/07\/2020",
-      "send_volume": "1803",
-      "sent_to": "Windows Upgrades",
-      "preview": "https:\/\/campaign.emailblaster.cloud\/MTQ0MTU\/37.html"
-  }
-]
-*/
-
-// var mySchema = [
-//   {
-//     name: 'name',
-//     label: 'Name',
-//     dataType: 'STRING',
-//     semantics: {
-//     conceptType: 'DIMENSION'
-//     }
-//   },
-//   {
-//     name: 'sendVolume',
-//     label: 'Send Volume',
-//     dataType: 'NUMBER',
-//     semantics: {
-//     conceptType: 'METRIC'
-//     }
-//   }
-// ];
-
 function getFields(request) {
   console.log("Entering getFields() method");
   var cc = DataStudioApp.createCommunityConnector();
   var fields = cc.getFields();
   var types = cc.FieldType;
   var aggregations = cc.AggregationType;
-
-  // fields.newDimension()
-  //   .setId('packageName')
-  //   .setType(types.TEXT);
-
-  // fields.newMetric()
-  //   .setId('downloads')
-  //   .setType(types.NUMBER)
-  //   .setAggregation(aggregations.SUM);
-
-  // fields.newDimension()
-  //   .setId('day')
-  //   .setType(types.YEAR_MONTH_DAY);
 
   console.log("About to create fields...");
 
@@ -155,6 +114,8 @@ function getSchema(request) {
 
   return { schema: fields };
 }
+
+
 
 /*
  * Provdes actual requested data to data studio
