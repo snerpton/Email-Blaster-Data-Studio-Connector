@@ -1,0 +1,13 @@
+{
+  "runtimeVersion": "V8",
+  "dataStudio": {
+    "name": "Email Blaster Campaign Connector by Agidea",
+    "logoUrl": "https://www.agidea.uk/assets/images/svg/agidea-logo-we-make-things-better.svg",
+    "company": "Agidea Ltd (Chris Ashton)",
+    "companyUrl": "https://www.agidea.uk/",
+    "addonUrl": "https://github.com/google/datastudio/tree/master/community-connectors/npm-downloads",
+    "supportUrl": "https://github.com/google/datastudio/issues",
+    "description": "Data Studio Connector for Email Blaster campaigns.",
+    "sources": ["npm"]
+  }
+}
