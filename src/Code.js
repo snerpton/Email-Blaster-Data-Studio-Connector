@@ -107,6 +107,11 @@ function getFields(request) {
 
   fields
     .newDimension()
+    .setId("date")
+    .setType(types.YEAR_MONTH_DAY);
+
+  fields
+    .newDimension()
     .setId("name")
     .setType(types.TEXT);
 
@@ -163,6 +168,8 @@ function responseToRows(requestedFields, response, packageName) {
       switch (field.getId()) {
         case "id":
           return row.push(campaign.id);
+        case "date":
+            return row.push(formatEmailBlasterDate(campaign.date));  
         case "name":
           return row.push(campaign.name);
         case "subject":
@@ -181,6 +188,10 @@ function responseToRows(requestedFields, response, packageName) {
     });
     return { values: row };
   });
+}
+
+function formatEmailBlasterDate(date){
+  return date.split("/").reverse().join("");
 }
 
 function getData(request) {
