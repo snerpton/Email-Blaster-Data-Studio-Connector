@@ -153,44 +153,6 @@ function formatEmailBlasterDate(date) {
 function getData(request) {
   console.log("Entering getData() method");
 
-  var requestedFieldIds = request.fields.map(function(field) {
-    return field.name;
-  });
-  var requestedFields = getFields().forIds(requestedFieldIds);
-
-  // Fetch and parse data from API
-  var url = [
-    // 'https://api.npmjs.org/downloads/range/',
-    // request.dateRange.startDate,
-    // ':',
-    // request.dateRange.endDate,
-    // '/',
-    // request.configParams.package
-    "https://api.emailblaster.cloud/2.0/campaign/view/sent/1"
-  ];
-
-  var response = UrlFetchApp.fetch(url.join(""), {
-    headers: {
-      "content-type": "application/json",
-      api_key: request.configParams.apiKey
-    }
-  });
-
-  // var response =
-  //   '{"status":"ok","campaigns":[{"id":168,"name":"Pension webinars - reminder","subject":"Pension webinars - reminder","date":"20/11/2020","send_volume":"2115","sent_to":"Pensions E-mail -- 20.11.20","preview":"https://campaign.emailblaster.cloud/MTQ0MTU/168.html"},{"id":167,"name":"ACTION- Graduate Development Programme- PRP Process- Graduates","subject":"ACTION- Graduate Development Programme- PRP Process","date":"19/11/2020","send_volume":"21","sent_to":"Graduates -- 19.11.20","preview":"https://campaign.emailblaster.cloud/MTQ0MTU/167.html"},{"id":166,"name":"ACTION- Graduate Development Programme - PRP Process - Consulting Graduates","subject":"ACTION- Graduate Development Programme - PRP Process","date":"19/11/2020","send_volume":"53","sent_to":"Consulting Graduates -- 19.11.20\u00a0","preview":"https://campaign.emailblaster.cloud/MTQ0MTU/166.html"}]}';
-
-  var parsedResponse = JSON.parse(response).campaigns;
-  var rows = responseToRows(
-    requestedFields,
-    parsedResponse,
-    request.configParams.apiKey
-  );
-
-  return {
-    schema: requestedFields.build(),
-    rows: rows
-  };
-
   // var requestedFieldIds = request.fields.map(function(field) {
   //   return field.name;
   // });
@@ -213,4 +175,34 @@ function getData(request) {
   //   schema: requestedFields.build(),
   //   rows: rows
   // };
+
+  var requestedFieldIds = request.fields.map(function(field) {
+    return field.name;
+  });
+  var requestedFields = getFields().forIds(requestedFieldIds);
+
+  // Fetch and parse data from API
+  var url = ["https://api.emailblaster.cloud/2.0/campaign/view/sent/", 1];
+  var response = UrlFetchApp.fetch(url.join(""), {
+    headers: {
+      "content-type": "application/json",
+      api_key: request.configParams.apiKey
+    }
+  });
+
+  Logger.log("response.getResponseCode(): ", response.getResponseCode());
+  var parsedResponseRaw = JSON.parse(response);
+  Logger.log("parsedResponseRaw.status: ", parsedResponseRaw.status);
+
+  var parsedResponse = parsedResponseRaw.campaigns;
+  var rows = responseToRows(
+    requestedFields,
+    parsedResponse,
+    request.configParams.apiKey
+  );
+
+  return {
+    schema: requestedFields.build(),
+    rows: rows
+  };
 }
