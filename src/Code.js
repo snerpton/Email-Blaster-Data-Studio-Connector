@@ -112,9 +112,10 @@ function getSchema(request) {
 /*
  * Provdes actual requested data to data studio
  */
-function responseToRows(requestedFields, response, packageName) {
-  console.log("Entering responseToRows() method");
+function responseToRows(requestedFields, response) {
+  Logger.log("Entering responseToRows() method");
 
+try {
   return response.map(function(campaign) {
     var row = [];
     requestedFields.asArray().forEach(function(field) {
@@ -141,6 +142,11 @@ function responseToRows(requestedFields, response, packageName) {
     });
     return { values: row };
   });
+} catch (error) {
+  Logger.log("There was an error in responseToRows(). Error: ", error);
+}
+
+
 }
 
 function formatEmailBlasterDate(date) {
@@ -176,31 +182,105 @@ function getData(request) {
   //   rows: rows
   // };
 
+
+//////////////////////////////////////////////////
+
+
+  // var requestedFieldIds = request.fields.map(function(field) {
+  //   return field.name;
+  // });
+  // var requestedFields = getFields().forIds(requestedFieldIds);
+
+  // // Fetch and parse data from API
+  // var url = ["https://api.emailblaster.cloud/2.0/campaign/view/sent/", 1];
+  // var response = UrlFetchApp.fetch(url.join(""), {
+  //   headers: {
+  //     "content-type": "application/json",
+  //     api_key: request.configParams.apiKey
+  //   }
+  // });
+
+  // Logger.log("response.getResponseCode(): ", response.getResponseCode());
+  // var parsedResponseRaw = JSON.parse(response);
+  // Logger.log("parsedResponseRaw.status: ", parsedResponseRaw.status);
+
+  // var parsedResponse = parsedResponseRaw.campaigns;
+
+  // Logger.log("parsedResponse.length: ", parsedResponse.length);
+  // Logger.log('About to create rows: parsedResponse[0]: ', parsedResponse[0]);
+  // Logger.log('About to create rows: parsedResponse[parsedResponse.length -1]: ', parsedResponse[parsedResponse.length -1]);
+  // Logger.log('JSON.stringify(parsedResponse).substr(0,500)', JSON.stringify(parsedResponse).substr(0,500));
+
+  // var rows = responseToRows(
+  //   requestedFields,
+  //   parsedResponse
+  // );
+
+  // Logger.log('rows[0]: ', rows[0]);
+  // Logger.log('rows[rows.length -1]: ', rows[rows.length -1]);
+  // Logger.log('rows', rows);
+
+  // return {
+  //   schema: requestedFields.build(),
+  //   rows: rows
+  // };
+
+
+////////////////////////////////////////////////////////
+
   var requestedFieldIds = request.fields.map(function(field) {
     return field.name;
   });
   var requestedFields = getFields().forIds(requestedFieldIds);
 
-  // Fetch and parse data from API
-  var url = ["https://api.emailblaster.cloud/2.0/campaign/view/sent/", 1];
-  var response = UrlFetchApp.fetch(url.join(""), {
-    headers: {
-      "content-type": "application/json",
-      api_key: request.configParams.apiKey
+  Logger.log("About to get response...");
+
+  var urls = [];
+
+  for (let page = 1; page <= 2; page++) {
+    var url = ["https://api.emailblaster.cloud/2.0/campaign/view/sent/", page];
+    urls.push(url);
+    Logger.log("1) page: ", page);
+  }
+
+  var totalParsedResponse = [];
+  for (let i = 0; i < urls.length; i++) {
+    Logger.log("2) page: ", i);
+    var response = UrlFetchApp.fetch(urls[i].join(""), {
+      headers: {
+        "content-type": "application/json",
+        api_key: request.configParams.apiKey
+      }
+    });
+
+    Logger.log("response.getResponseCode(): ", response.getResponseCode());
+    var parsedResponseRaw = JSON.parse(response);
+    Logger.log("parsedResponseRaw.status: ", parsedResponseRaw.status);
+    Logger.log("parsedResponseRaw.campaigns[0]: ", parsedResponseRaw.campaigns[0]);
+
+    var parsedResponse = JSON.parse(response).campaigns;
+
+    Logger.log("parsedResponse[0]: ", parsedResponse[0]);
+
+    for (let i = 0; i < parsedResponse.length; i++) {
+      totalParsedResponse.push(parsedResponse[i]);
     }
-  });
+  }
 
-  Logger.log("response.getResponseCode(): ", response.getResponseCode());
-  var parsedResponseRaw = JSON.parse(response);
-  Logger.log("parsedResponseRaw.status: ", parsedResponseRaw.status);
+  Logger.log("totalParsedResponse.length: ", totalParsedResponse.length);
+  Logger.log('About to create rows: totalParsedResponse[0]: ', totalParsedResponse[0]);
+  Logger.log('About to create rows: totalParsedResponse[totalParsedResponse.length -1]: ', totalParsedResponse[totalParsedResponse.length -1]);
+  Logger.log('JSON.stringify(totalParsedResponse).substr(0,500)', JSON.stringify(totalParsedResponse).substr(0,500));
 
-  var parsedResponse = parsedResponseRaw.campaigns;
   var rows = responseToRows(
     requestedFields,
-    parsedResponse,
-    request.configParams.apiKey
+    totalParsedResponse
   );
 
+  Logger.log('rows.values[0]: ', rows.values[0]);
+  Logger.log('rows.values[rows.values.length -1]: ', rows[rows.values.length -1]);
+  Logger.log('rows', rows);
+  
   return {
     schema: requestedFields.build(),
     rows: rows
